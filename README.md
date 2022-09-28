@@ -43,15 +43,16 @@ The booking process should be created as below:
 - Docker
 - JUnit
 
-# How to setup project
+# How to run the project
+
+You need to have Docker installed on your machine.
+
 
     git clone https://github.com/esrgrlk/home-cleaning-service.git
 
+    docker compose up
 
-    mvn clean install
+Docker will build an image of the application at the first run.
+If you change something after the first run, you need to add `--build` flag to tell Docker to rebuild the image:
 
-
-    docker build -t home-cleaning-service .
-
-
-    docker-compose up
+    docker compose up --build
