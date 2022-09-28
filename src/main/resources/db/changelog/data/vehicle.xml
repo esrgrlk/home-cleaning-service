@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+    <changeSet id="vehicle" author="esrayg" context="data">
+        <insert tableName="vehicle"> <column name="id" valueNumeric="1" /> <column name="license_plate" value="A10234" />  <column name="driver_name" value="Ahmad" />  </insert>
+        <insert tableName="vehicle"> <column name="id" valueNumeric="2" /> <column name="license_plate" value="A12345" />  <column name="driver_name" value="Tarek" />  </insert>
+        <insert tableName="vehicle"> <column name="id" valueNumeric="3" /> <column name="license_plate" value="A20468" />  <column name="driver_name" value="Omar"  />  </insert>
+        <insert tableName="vehicle"> <column name="id" valueNumeric="4" /> <column name="license_plate" value="A12346" />  <column name="driver_name" value="Hassan"/>  </insert>
+        <insert tableName="vehicle"> <column name="id" valueNumeric="5" /> <column name="license_plate" value="A35791" />  <column name="driver_name" value="Ammar" />  </insert>
+    </changeSet>
+</databaseChangeLog>

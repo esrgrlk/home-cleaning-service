@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+    <changeSet id="280922 10:10" author="esragy" context="sql">
+        <sql>
+            CREATE TABLE appointment (
+                                     id bigint AUTO_INCREMENT NOT NULL,
+                                     start_time timestamp NOT NULL,
+                                     end_time timestamp NOT NULL,
+                                     version smallint NOT NULL DEFAULT 0,
+                                     created_date timestamp NOT NULL DEFAULT now(),
+                                     last_modified_date timestamp,
+                                     PRIMARY KEY (id)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

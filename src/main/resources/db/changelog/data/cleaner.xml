@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+    <changeSet id="cleaner" author="esrayg" context="data">
+        <insert tableName="cleaner"> <column name="id" valueNumeric="1"  /> <column name="name" value="Aisha" />   <column name="surname" value="Saleh" />      <column name="vehicle_id" valueNumeric="1" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="2"  /> <column name="name" value="Amina" />   <column name="surname" value="Rashid" />     <column name="vehicle_id" valueNumeric="1" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="3"  /> <column name="name" value="Fatima" />  <column name="surname" value="Ali"  />       <column name="vehicle_id" valueNumeric="1" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="4"  /> <column name="name" value="Gul" />     <column name="surname" value="Khan"/>        <column name="vehicle_id" valueNumeric="1" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="5"  /> <column name="name" value="Ahmad" />   <column name="surname" value="Kumar" />      <column name="vehicle_id" valueNumeric="1" />  </insert>
+
+        <insert tableName="cleaner"> <column name="id" valueNumeric="6"  /> <column name="name" value="Jane" />    <column name="surname" value="Brown" />      <column name="vehicle_id" valueNumeric="2" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="7"  /> <column name="name" value="Tom" />     <column name="surname" value="White" />      <column name="vehicle_id" valueNumeric="2" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="8"  /> <column name="name" value="Sophie" />  <column name="surname" value="Walker"/>      <column name="vehicle_id" valueNumeric="2" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="9"  /> <column name="name" value="Daniel" />  <column name="surname" value="Green"/>       <column name="vehicle_id" valueNumeric="2" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="10" /> <column name="name" value="Mary" />    <column name="surname" value="Turner" />     <column name="vehicle_id" valueNumeric="2" />  </insert>
+
+        <insert tableName="cleaner"> <column name="id" valueNumeric="11" /> <column name="name" value="Ali" />     <column name="surname" value="Saleh" />      <column name="vehicle_id" valueNumeric="3" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="12" /> <column name="name" value="Leya" />    <column name="surname" value="Rashid" />     <column name="vehicle_id" valueNumeric="3" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="13" /> <column name="name" value="Sofi" />    <column name="surname" value="Ali"  />       <column name="vehicle_id" valueNumeric="3" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="14" /> <column name="name" value="Zara" />    <column name="surname" value="Khan"/>        <column name="vehicle_id" valueNumeric="3" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="15" /> <column name="name" value="Omar" />    <column name="surname" value="Kumar" />      <column name="vehicle_id" valueNumeric="3" />  </insert>
+
+        <insert tableName="cleaner"> <column name="id" valueNumeric="16" /> <column name="name" value="Daisy" />   <column name="surname" value="Johnson" />    <column name="vehicle_id" valueNumeric="4" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="17" /> <column name="name" value="Robert" />  <column name="surname" value="Smith" />      <column name="vehicle_id" valueNumeric="4" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="18" /> <column name="name" value="John" />    <column name="surname" value="Williams" />   <column name="vehicle_id" valueNumeric="4" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="19" /> <column name="name" value="Rachel" />  <column name="surname" value="Khan"/>        <column name="vehicle_id" valueNumeric="4" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="20" /> <column name="name" value="James" />   <column name="surname" value="Ali" />        <column name="vehicle_id" valueNumeric="4" />  </insert>
+
+        <insert tableName="cleaner"> <column name="id" valueNumeric="21" /> <column name="name" value="Atiya" />   <column name="surname" value="Amin" />       <column name="vehicle_id" valueNumeric="5" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="22" /> <column name="name" value="Ahsan" />   <column name="surname" value="Aziz" />       <column name="vehicle_id" valueNumeric="5" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="23" /> <column name="name" value="Abbas" />   <column name="surname" value="Hadi"  />      <column name="vehicle_id" valueNumeric="5" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="24" /> <column name="name" value="Adil" />    <column name="surname" value="Sultan"/>      <column name="vehicle_id" valueNumeric="5" />  </insert>
+        <insert tableName="cleaner"> <column name="id" valueNumeric="25" /> <column name="name" value="Safa" />    <column name="surname" value="Reza" />       <column name="vehicle_id" valueNumeric="5" />  </insert>
+    </changeSet>
+</databaseChangeLog>

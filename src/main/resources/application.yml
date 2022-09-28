@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: default
+  application:
+    name: home-cleaning-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/home_cleaning?allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: root
+    driverClassName: com.mysql.jdbc.Driver
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+    drop-first: true
+    contexts: sql,data
+    enabled: true

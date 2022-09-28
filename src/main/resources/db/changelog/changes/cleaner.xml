@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+    <changeSet id="280922 10:05" author="esragy" context="sql">
+        <sql>
+            CREATE TABLE cleaner (
+                                     id bigint AUTO_INCREMENT NOT NULL,
+                                     name varchar(255) NOT NULL,
+                                     surname varchar(255) NOT NULL,
+                                     vehicle_id bigint NOT NULL,
+                                     version smallint NOT NULL DEFAULT 0,
+                                     created_date timestamp NOT NULL DEFAULT now(),
+                                     last_modified_date timestamp,
+                                     PRIMARY KEY (id),
+                                     FOREIGN KEY (vehicle_id) REFERENCES vehicle (id)
+            );
+
+            CREATE INDEX idx_cleaner_vehicle_id ON cleaner (vehicle_id);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

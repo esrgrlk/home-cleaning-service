@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+    <changeSet id="appointment" author="esrayg" context="data">
+        <insert tableName="appointment"> <column name="id" valueNumeric="1" /> <column name="start_time" value="2022-09-27 09:00:00" />  <column name="end_time" value="2022-09-27 11:00:00" />  </insert>
+        <insert tableName="appointment"> <column name="id" valueNumeric="2" /> <column name="start_time" value="2022-09-28 08:00:00" />  <column name="end_time" value="2022-09-28 12:00:00" />  </insert>
+        <insert tableName="appointment"> <column name="id" valueNumeric="3" /> <column name="start_time" value="2022-09-29 10:00:00" />  <column name="end_time" value="2022-09-29 12:00:00"  />  </insert>
+        <insert tableName="appointment"> <column name="id" valueNumeric="4" /> <column name="start_time" value="2022-09-28 14:00:00" />  <column name="end_time" value="2022-09-28 18:00:00"/>  </insert>
+        <insert tableName="appointment"> <column name="id" valueNumeric="5" /> <column name="start_time" value="2022-09-29 12:00:00" />  <column name="end_time" value="2022-09-29 14:00:00" />  </insert>
+    </changeSet>
+</databaseChangeLog>
