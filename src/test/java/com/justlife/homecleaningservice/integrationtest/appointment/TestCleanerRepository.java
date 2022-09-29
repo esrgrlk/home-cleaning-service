@@ -28,7 +28,7 @@ public class TestCleanerRepository {
         LocalDateTime startTime = LocalDateTime.of(2022, Month.SEPTEMBER, 28, 8, 0, 0);
         LocalDateTime endTime = LocalDateTime.of(2022, Month.SEPTEMBER, 28, 10, 0, 0);
         List<Cleaner> cleanerList = cleanerRepository.findAll(notOverlapsTimePeriod(startTime, endTime));
-        assertEquals(cleanerList.size(), 24);
+        assertEquals(25, cleanerList.size());
     }
 
     @Test
@@ -36,6 +36,6 @@ public class TestCleanerRepository {
         LocalDateTime startTime = LocalDateTime.of(2022, Month.SEPTEMBER, 28, 8, 0, 0);
         LocalDateTime endTime = LocalDateTime.of(2022, Month.SEPTEMBER, 28, 10, 0, 0);
         List<Cleaner> cleanerList = cleanerRepository.findAll(overlapsTimePeriod(startTime, endTime));
-        assertEquals(cleanerList.size(), 19);
+        assertEquals(17, cleanerList.size());
     }
 }
