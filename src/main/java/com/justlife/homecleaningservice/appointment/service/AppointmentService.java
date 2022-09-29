@@ -6,7 +6,6 @@ import com.justlife.homecleaningservice.appointment.entity.Appointment;
 import com.justlife.homecleaningservice.appointment.entity.Cleaner;
 import com.justlife.homecleaningservice.appointment.mapper.CleanerAvailabilityMapper;
 import com.justlife.homecleaningservice.appointment.repository.AppointmentRepository;
-import com.justlife.homecleaningservice.appointment.repository.CleanerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.http.HttpStatus;
@@ -22,16 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.justlife.homecleaningservice.appointment.repository.specifications.CleanerSpecifications.notOverlapsTimePeriod;
-import static com.justlife.homecleaningservice.appointment.repository.specifications.CleanerSpecifications.overlapsTimePeriod;
-
 @Service
 @RequiredArgsConstructor
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-
-    private final CleanerRepository cleanerRepository;
 
     private final CleanerService cleanerService;
 
@@ -42,34 +36,33 @@ public class AppointmentService {
 
     @Transactional(readOnly = true)
     public List<CleanerAvailabilityResponseDTO> getCleanersAvailability(LocalDate startDate, LocalTime startTime, Integer duration) {
+        if (startDate.getDayOfWeek() == Appointment.OFF_DAY) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, AppointmentMessages.ERROR_APPOINTMENT_OFF_DAY);
+        }
+
         if (startTime == null || duration == null) {
-            return getAllCleanersSchedule(startDate);
+            return getAvailableCleanersSchedule(startDate);
         }
 
         List<Cleaner> availableCleaners = cleanerService.getAvailableCleaners(startDate, startTime, duration);
-
         return availableCleaners.stream().map(CleanerAvailabilityMapper.INSTANCE::entityToDto).collect(Collectors.toList());
     }
 
-    public List<CleanerAvailabilityResponseDTO> getAllCleanersSchedule(LocalDate date) {
-        val startTime = LocalTime.of(8, 0, 0);
-        val endTime = LocalTime.of(22, 0, 0);
-        List<Cleaner> cleaners = cleanerRepository.findAll(overlapsTimePeriod(startTime.atDate(date), endTime.atDate(date)));
-
-        return cleaners
-                .stream()
-                .map(it -> new CleanerAvailabilityResponseDTO(it.getId(), it.getName(), it.getSurname(), getAvailableSchedule(it)))
+    public List<CleanerAvailabilityResponseDTO> getAvailableCleanersSchedule(LocalDate date) {
+        List<Cleaner> availableCleaners = cleanerService.getAvailableCleanersByDate(date);
+        return availableCleaners.stream()
+                .map(cleaner -> new CleanerAvailabilityResponseDTO(cleaner.getId(), cleaner.getName(), cleaner.getSurname(), getAvailableSchedule(cleaner)))
                 .collect(Collectors.toList());
     }
 
-    private List<AvailableTimePeriodResponseDTO> getAvailableSchedule(Cleaner c) {
-        var timeStart = LocalTime.of(8, 0, 0);
-        var timeEnd = LocalTime.of(22, 0, 0);
+    private List<AvailableTimePeriodResponseDTO> getAvailableSchedule(Cleaner cleaner) {
+        LocalTime timeStart = Cleaner.START_WORKING_HOUR;
+        LocalTime timeEnd = Cleaner.END_WORKING_HOUR;
 
-        if (c.getAppointments() == null || c.getAppointments().isEmpty()) {
+        if (cleaner.getAppointments() == null || cleaner.getAppointments().isEmpty()) {
             return List.of(new AvailableTimePeriodResponseDTO(timeStart, timeEnd));
         }
-        val appointments = c.getAppointments().stream().sorted(Comparator.comparing(Appointment::getStartTime)).toList();
+        List<Appointment> appointments = cleaner.getAppointments().stream().sorted(Comparator.comparing(Appointment::getStartTime)).toList();
 
         val result = new ArrayList<AvailableTimePeriodResponseDTO>();
         for (final Appointment a : appointments) {
@@ -83,25 +76,36 @@ public class AppointmentService {
             result.add(new AvailableTimePeriodResponseDTO(timeStart, timeEnd));
         }
         return result;
-
     }
 
     @Transactional
     public void create(Appointment appointment, Integer cleanerCount) {
-        List<Cleaner> availableCleaners = cleanerRepository.findAll(notOverlapsTimePeriod(appointment.getStartTime().minusMinutes(30), appointment.getEndTime().plusMinutes(30)));
+        if (!appointment.isDayOfWeekSuitable()) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, AppointmentMessages.ERROR_APPOINTMENT_OFF_DAY);
+        }
 
-        Map<Long, List<Cleaner>> cleanersPerVehicle = availableCleaners.stream().collect(Collectors.groupingBy(cleaner -> cleaner.getVehicle().getId()));
+        List<Cleaner> availableCleaners = getAvailableCleanersByCleanerCount(appointment, cleanerCount);
+        appointment.getCleaners().addAll(availableCleaners);
+        appointmentRepository.save(appointment);
+    }
+
+    private List<Cleaner> getAvailableCleanersByCleanerCount(Appointment appointment, Integer cleanerCount) {
+        List<Cleaner> availableCleaners = cleanerService.getAvailableCleaners(appointment.getStartTime(), appointment.getEndTime());
 
         List<Cleaner> cleaners = new ArrayList<>();
-        for (Map.Entry<Long, List<Cleaner>> entry : cleanersPerVehicle.entrySet()) {
-            if (entry.getValue().size() >= cleanerCount) {
-                cleaners = entry.getValue().subList(0, cleanerCount);
-                break;
+        if (cleanerCount == 1) {
+            cleaners.add(availableCleaners.get(0));
+        } else {
+            Map<Long, List<Cleaner>> cleanersPerVehicle = availableCleaners.stream().collect(Collectors.groupingBy(cleaner -> cleaner.getVehicle().getId()));
+
+            for (Map.Entry<Long, List<Cleaner>> entry : cleanersPerVehicle.entrySet()) {
+                if (entry.getValue().size() >= cleanerCount) {
+                    cleaners = entry.getValue().subList(0, cleanerCount);
+                    break;
+                }
             }
         }
-        appointment.getCleaners().addAll(cleaners);
-       // appointment.getCleaners().add(availableCleaners.get(0));
-        appointmentRepository.save(appointment);
+        return cleaners;
     }
 
     @Transactional

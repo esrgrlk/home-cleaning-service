@@ -12,10 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -39,10 +37,6 @@ public class AppointmentController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
             @RequestParam(required = false) Integer duration) {
-
-        if (startDate.getDayOfWeek() == DayOfWeek.FRIDAY) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Fridays are holy");
-        }
         return appointmentService.getCleanersAvailability(startDate, startTime, duration);
     }
 

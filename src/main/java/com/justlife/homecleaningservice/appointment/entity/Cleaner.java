@@ -4,6 +4,7 @@ import com.justlife.homecleaningservice.common.entity.AbstractVersionedAuditable
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 import java.util.Set;
 
 @Getter
@@ -16,6 +17,10 @@ import java.util.Set;
 public class Cleaner extends AbstractVersionedAuditableEntity {
 
     public static final int MIN_BREAK_DURATION_IN_MINUTES = 30;
+
+    public static final LocalTime START_WORKING_HOUR = LocalTime.of(8, 0);
+
+    public static final LocalTime END_WORKING_HOUR = LocalTime.of(22, 0);
 
     @Column(name = "NAME")
     private String name;

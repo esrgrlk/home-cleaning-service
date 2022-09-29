@@ -4,6 +4,7 @@ import com.justlife.homecleaningservice.common.entity.AbstractVersionedAuditable
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -15,6 +16,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "APPOINTMENT")
 public class Appointment extends AbstractVersionedAuditableEntity {
+
+    public static final DayOfWeek OFF_DAY = DayOfWeek.FRIDAY;
 
     @Column(name = "START_TIME")
     private LocalDateTime startTime;
@@ -30,5 +33,9 @@ public class Appointment extends AbstractVersionedAuditableEntity {
 
     public void update(Appointment appointment) {
         this.startTime = appointment.getStartTime();
+    }
+
+    public boolean isDayOfWeekSuitable() {
+        return startTime.getDayOfWeek() != OFF_DAY;
     }
 }

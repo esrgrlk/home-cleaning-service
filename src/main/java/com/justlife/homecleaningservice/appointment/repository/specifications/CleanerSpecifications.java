@@ -15,6 +15,7 @@ public class CleanerSpecifications {
     public static Specification<Cleaner> notOverlapsTimePeriod(LocalDateTime startTime, LocalDateTime endTime) {
         return (root, query, cb) -> {
             Join<Cleaner, Appointment> join = root.join(Cleaner_.appointments, JoinType.LEFT);
+            query.distinct(true);
             return cb.or(cb.isNull(join.get(Appointment_.id)),
                     cb.or(
                             cb.greaterThanOrEqualTo(join.get(Appointment_.startTime), endTime),

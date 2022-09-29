@@ -4,7 +4,6 @@ import com.justlife.homecleaningservice.appointment.dto.AvailableTimePeriodRespo
 import com.justlife.homecleaningservice.appointment.dto.CleanerAvailabilityResponseDTO;
 import com.justlife.homecleaningservice.appointment.entity.Appointment;
 import com.justlife.homecleaningservice.appointment.entity.Cleaner;
-import com.justlife.homecleaningservice.appointment.repository.CleanerRepository;
 import lombok.val;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,11 +23,10 @@ import java.util.Set;
 class AppointmentServiceTest {
 
     @Mock
-    private CleanerRepository cleanerRepository;
+    private CleanerService cleanerService;
 
     @InjectMocks
     private AppointmentService appointmentService;
-
 
     @Test
     public void testAllCleanersSchedule() {
@@ -53,11 +50,11 @@ class AppointmentServiceTest {
         val c3 = Cleaner.builder().name("name3").surname("sur3").build();
         c3.setId(3L);
 
-        Mockito.when(cleanerRepository.findAll(Mockito.<Specification<Cleaner>>any())).thenReturn(List.of(c1, c2, c3));
+        Mockito.when(cleanerService.getAvailableCleanersByDate(Mockito.any())).thenReturn(List.of(c1, c2, c3));
 
         // do
         LocalDate queryDate = LocalDate.of(2022, 9, 28);
-        val actual = appointmentService.getAllCleanersSchedule(queryDate);
+        val actual = appointmentService.getAvailableCleanersSchedule(queryDate);
 
         // then
         Assertions.assertThat(actual).hasSize(3);
@@ -77,6 +74,5 @@ class AppointmentServiceTest {
         Assertions.assertThat(response3).isEqualTo(new CleanerAvailabilityResponseDTO(c3.getId(), c3.getName(), c3.getSurname(),
                 List.of(new AvailableTimePeriodResponseDTO(LocalTime.of(8, 0, 0), LocalTime.of(22, 0, 0)))));
     }
-
 
 }
