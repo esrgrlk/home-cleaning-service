@@ -111,6 +111,10 @@ public class AppointmentService {
 
     @Transactional
     public void update(Appointment appointment) {
+        if (!appointment.isDayOfWeekSuitable()) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, AppointmentMessages.ERROR_APPOINTMENT_OFF_DAY);
+        }
+
         Appointment existingAppointment = retrieveByIdOrElseThrow(appointment.getId());
         existingAppointment.update(appointment);
     }

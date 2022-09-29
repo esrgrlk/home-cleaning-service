@@ -56,3 +56,7 @@ Docker will build an image of the application at the first run.
 If you change something after the first run, you need to add `--build` flag to tell Docker to rebuild the image:
 
     docker compose up --build
+
+# API Documentation
+
+    http://localhost:8080/swagger-ui/
