@@ -34,9 +34,12 @@ public class Appointment extends AbstractVersionedAuditableEntity {
     private Set<Cleaner> cleaners;
 
     public void update(Appointment appointment) {
-        long duration = Duration.between(startTime, endTime).toHours();
         this.startTime = appointment.getStartTime();
-        this.endTime = startTime.plusHours(duration);
+        this.endTime = appointment.getEndTime();
+    }
+
+    public long getDuration() {
+        return Duration.between(startTime, endTime).toHours();
     }
 
     public boolean isDayOfWeekSuitable() {

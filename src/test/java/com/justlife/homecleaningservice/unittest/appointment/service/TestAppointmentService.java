@@ -1,9 +1,11 @@
-package com.justlife.homecleaningservice.appointment.service;
+package com.justlife.homecleaningservice.unittest.appointment.service;
 
 import com.justlife.homecleaningservice.appointment.dto.AvailableTimePeriodResponseDTO;
 import com.justlife.homecleaningservice.appointment.dto.CleanerAvailabilityResponseDTO;
 import com.justlife.homecleaningservice.appointment.entity.Appointment;
 import com.justlife.homecleaningservice.appointment.entity.Cleaner;
+import com.justlife.homecleaningservice.appointment.service.AppointmentService;
+import com.justlife.homecleaningservice.appointment.service.CleanerService;
 import lombok.val;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
-class AppointmentServiceTest {
+class TestAppointmentService {
 
     @Mock
     private CleanerService cleanerService;

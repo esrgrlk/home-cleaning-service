@@ -7,7 +7,6 @@ import com.justlife.homecleaningservice.appointment.entity.Cleaner;
 import com.justlife.homecleaningservice.appointment.mapper.CleanerAvailabilityMapper;
 import com.justlife.homecleaningservice.appointment.repository.AppointmentRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,7 +64,7 @@ public class AppointmentService {
         }
         List<Appointment> appointments = cleaner.getAppointments().stream().filter(a -> a.isEqualStartDate(date)).sorted(Comparator.comparing(Appointment::getStartTime)).toList();
 
-        val result = new ArrayList<AvailableTimePeriodResponseDTO>();
+        List<AvailableTimePeriodResponseDTO> result = new ArrayList<>();
         for (final Appointment appointment : appointments) {
             LocalDateTime appStartTime = appointment.getStartTime();
             if (appStartTime.isAfter(timeStart)) {
@@ -81,9 +80,7 @@ public class AppointmentService {
 
     @Transactional
     public void create(Appointment appointment, Integer cleanerCount) {
-        if (!appointment.isDayOfWeekSuitable()) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, AppointmentMessages.ERROR_APPOINTMENT_OFF_DAY);
-        }
+        validateAppointmentTimePeriod(appointment);
 
         List<Cleaner> availableCleaners = getAvailableCleanersByCleanerCount(appointment, cleanerCount);
         appointment.getCleaners().addAll(availableCleaners);
@@ -111,16 +108,26 @@ public class AppointmentService {
 
     @Transactional
     public void update(Appointment appointment) {
-        if (!appointment.isDayOfWeekSuitable()) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, AppointmentMessages.ERROR_APPOINTMENT_OFF_DAY);
-        }
-
         Appointment existingAppointment = retrieveByIdOrElseThrow(appointment.getId());
+
+        appointment.setEndTime(appointment.getStartTime().plusHours(existingAppointment.getDuration()));
+        validateAppointmentTimePeriod(appointment);
+
         existingAppointment.update(appointment);
     }
 
     private Appointment retrieveByIdOrElseThrow(Long id) {
         return appointmentRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, AppointmentMessages.ERROR_APPOINTMENT_NOT_FOUND));
+    }
+
+    private void validateAppointmentTimePeriod(Appointment appointment) {
+        if (!appointment.isDayOfWeekSuitable()) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, AppointmentMessages.ERROR_APPOINTMENT_OFF_DAY);
+        }
+
+        if (appointment.getEndTime().toLocalTime().isAfter(Cleaner.END_WORKING_HOUR)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, AppointmentMessages.ERROR_APPOINTMENT_END_TIME);
+        }
     }
 }

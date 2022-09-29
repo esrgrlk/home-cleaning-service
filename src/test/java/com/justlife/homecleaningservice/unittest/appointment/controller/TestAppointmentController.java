@@ -1,4 +1,4 @@
-package com.justlife.homecleaningservice.appointment.controller;
+package com.justlife.homecleaningservice.unittest.appointment.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +14,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class AppointmentControllerTest {
+class TestAppointmentController {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void shouldThrowErrorOnFriday() throws Exception {
+    public void testWrongStartDateFormat() throws Exception {
         this.mockMvc
                 .perform(get("/appointments/availability").param("startDate", "20220929"))
+                .andExpect(status().is(400))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentTypeMismatchException));
+    }
+
+    @Test
+    public void testWrongStartTimeFormat() throws Exception {
+        this.mockMvc
+                .perform(get("/appointments/availability")
+                        .param("startDate", "2022-09-29")
+                        .param("startTime", "8.00"))
                 .andExpect(status().is(400))
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentTypeMismatchException));
     }

@@ -1,4 +1,4 @@
-package com.justlife.homecleaningservice.appointment.service;
+package com.justlife.homecleaningservice.integrationtest.appointment;
 
 import com.justlife.homecleaningservice.appointment.entity.Cleaner;
 import com.justlife.homecleaningservice.appointment.repository.CleanerRepository;
@@ -13,6 +13,7 @@ import java.time.Month;
 import java.util.List;
 
 import static com.justlife.homecleaningservice.appointment.repository.specifications.CleanerSpecifications.notOverlapsTimePeriod;
+import static com.justlife.homecleaningservice.appointment.repository.specifications.CleanerSpecifications.overlapsTimePeriod;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
@@ -23,10 +24,18 @@ public class TestCleanerRepository {
     private CleanerRepository cleanerRepository;
 
     @Test
-    public void test() {
+    public void testNotOverlapsTimePeriod() {
         LocalDateTime startTime = LocalDateTime.of(2022, Month.SEPTEMBER, 28, 8, 0, 0);
         LocalDateTime endTime = LocalDateTime.of(2022, Month.SEPTEMBER, 28, 10, 0, 0);
         List<Cleaner> cleanerList = cleanerRepository.findAll(notOverlapsTimePeriod(startTime, endTime));
         assertEquals(cleanerList.size(), 24);
+    }
+
+    @Test
+    public void testOverlapsTimePeriod() {
+        LocalDateTime startTime = LocalDateTime.of(2022, Month.SEPTEMBER, 28, 8, 0, 0);
+        LocalDateTime endTime = LocalDateTime.of(2022, Month.SEPTEMBER, 28, 10, 0, 0);
+        List<Cleaner> cleanerList = cleanerRepository.findAll(overlapsTimePeriod(startTime, endTime));
+        assertEquals(cleanerList.size(), 19);
     }
 }
