@@ -9,5 +9,7 @@
         <insert tableName="appointment"> <column name="id" valueNumeric="3" /> <column name="start_time" value="2022-09-29 10:00:00" />  <column name="end_time" value="2022-09-29 12:00:00"  />  </insert>
         <insert tableName="appointment"> <column name="id" valueNumeric="4" /> <column name="start_time" value="2022-09-28 14:00:00" />  <column name="end_time" value="2022-09-28 18:00:00"/>  </insert>
         <insert tableName="appointment"> <column name="id" valueNumeric="5" /> <column name="start_time" value="2022-09-29 12:00:00" />  <column name="end_time" value="2022-09-29 14:00:00" />  </insert>
+        <insert tableName="appointment"> <column name="id" valueNumeric="6" /> <column name="start_time" value="2022-10-01 11:00:00" />  <column name="end_time" value="2022-10-01 15:00:00" />  </insert>
+        <insert tableName="appointment"> <column name="id" valueNumeric="7" /> <column name="start_time" value="2022-10-02 16:00:00" />  <column name="end_time" value="2022-10-02 18:00:00" />  </insert>
     </changeSet>
 </databaseChangeLog>
