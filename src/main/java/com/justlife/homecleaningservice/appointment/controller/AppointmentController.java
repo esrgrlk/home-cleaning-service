@@ -9,6 +9,7 @@ import com.justlife.homecleaningservice.appointment.mapper.CreateAppointmentMapp
 import com.justlife.homecleaningservice.appointment.mapper.UpdateAppointmentMapper;
 import com.justlife.homecleaningservice.appointment.service.AppointmentService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -39,9 +40,9 @@ public class AppointmentController {
                         "If all parameters are provided, returns available cleaners for the given time period")
     @GetMapping("/availability")
     public List<CleanerAvailabilityResponseDTO> getCleanersAvailability(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
-            @RequestParam(required = false) Integer duration) {
+            @ApiParam(example = "2022-09-29", required = true) @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @ApiParam(example = "08:00:00") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
+            @ApiParam(example = "2") @RequestParam(required = false) Integer duration) {
         return appointmentService.getCleanersAvailability(startDate, startTime, duration);
     }
 
