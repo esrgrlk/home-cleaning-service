@@ -5,6 +5,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -32,10 +34,16 @@ public class Appointment extends AbstractVersionedAuditableEntity {
     private Set<Cleaner> cleaners;
 
     public void update(Appointment appointment) {
+        long duration = Duration.between(startTime, endTime).toHours();
         this.startTime = appointment.getStartTime();
+        this.endTime = startTime.plusHours(duration);
     }
 
     public boolean isDayOfWeekSuitable() {
         return startTime.getDayOfWeek() != OFF_DAY;
+    }
+
+    public boolean isEqualStartDate(LocalDate date) {
+        return startTime.toLocalDate().isEqual(date);
     }
 }

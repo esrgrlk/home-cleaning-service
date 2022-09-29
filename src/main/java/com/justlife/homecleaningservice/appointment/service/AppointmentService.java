@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -51,29 +52,29 @@ public class AppointmentService {
     public List<CleanerAvailabilityResponseDTO> getAvailableCleanersSchedule(LocalDate date) {
         List<Cleaner> availableCleaners = cleanerService.getAvailableCleanersByDate(date);
         return availableCleaners.stream()
-                .map(cleaner -> new CleanerAvailabilityResponseDTO(cleaner.getId(), cleaner.getName(), cleaner.getSurname(), getAvailableSchedule(cleaner)))
+                .map(cleaner -> new CleanerAvailabilityResponseDTO(cleaner.getId(), cleaner.getName(), cleaner.getSurname(), getAvailableSchedule(date, cleaner)))
                 .collect(Collectors.toList());
     }
 
-    private List<AvailableTimePeriodResponseDTO> getAvailableSchedule(Cleaner cleaner) {
-        LocalTime timeStart = Cleaner.START_WORKING_HOUR;
-        LocalTime timeEnd = Cleaner.END_WORKING_HOUR;
+    private List<AvailableTimePeriodResponseDTO> getAvailableSchedule(LocalDate date, Cleaner cleaner) {
+        LocalDateTime timeStart = LocalDateTime.of(date, Cleaner.START_WORKING_HOUR);
+        LocalDateTime timeEnd = LocalDateTime.of(date, Cleaner.END_WORKING_HOUR);
 
         if (cleaner.getAppointments() == null || cleaner.getAppointments().isEmpty()) {
-            return List.of(new AvailableTimePeriodResponseDTO(timeStart, timeEnd));
+            return List.of(new AvailableTimePeriodResponseDTO(timeStart.toLocalTime(), timeEnd.toLocalTime()));
         }
-        List<Appointment> appointments = cleaner.getAppointments().stream().sorted(Comparator.comparing(Appointment::getStartTime)).toList();
+        List<Appointment> appointments = cleaner.getAppointments().stream().filter(a -> a.isEqualStartDate(date)).sorted(Comparator.comparing(Appointment::getStartTime)).toList();
 
         val result = new ArrayList<AvailableTimePeriodResponseDTO>();
-        for (final Appointment a : appointments) {
-            LocalTime appStartTime = a.getStartTime().toLocalTime();
+        for (final Appointment appointment : appointments) {
+            LocalDateTime appStartTime = appointment.getStartTime();
             if (appStartTime.isAfter(timeStart)) {
-                result.add(new AvailableTimePeriodResponseDTO(timeStart, appStartTime.minusMinutes(30)));
+                result.add(new AvailableTimePeriodResponseDTO(timeStart.toLocalTime(), appStartTime.minusMinutes(Cleaner.MIN_BREAK_DURATION_IN_MINUTES).toLocalTime()));
             }
-            timeStart = a.getEndTime().toLocalTime().plusMinutes(30);
+            timeStart = appointment.getEndTime().plusMinutes(Cleaner.MIN_BREAK_DURATION_IN_MINUTES);
         }
         if (timeStart.isBefore(timeEnd)) {
-            result.add(new AvailableTimePeriodResponseDTO(timeStart, timeEnd));
+            result.add(new AvailableTimePeriodResponseDTO(timeStart.toLocalTime(), timeEnd.toLocalTime()));
         }
         return result;
     }
@@ -111,7 +112,7 @@ public class AppointmentService {
     @Transactional
     public void update(Appointment appointment) {
         Appointment existingAppointment = retrieveByIdOrElseThrow(appointment.getId());
-      //  existingAppointment.update(appointment);
+        existingAppointment.update(appointment);
     }
 
     private Appointment retrieveByIdOrElseThrow(Long id) {
