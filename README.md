@@ -1,5 +1,10 @@
 # Justlife Home Cleaning Service Case Study
 
+## Author
+Esra Gürlük Yurt - esragurluk@gmail.com
+
+## Case Definition
+
 - There are hardworking cleaning professionals
   - Can serve for multiple appointments same day based on their schedule
   - Must have a break at least 30 minutes between appointments one after
@@ -35,7 +40,7 @@ The booking process should be created as below:
   - The date and time of booking should be able to be updated.
   - After a booking is updated, the cleaner professionals' available times will be updated.
 
-# Technology Stack
+## Technology Stack
 - Java
 - Spring Boot
 - Maven
@@ -43,7 +48,7 @@ The booking process should be created as below:
 - Docker
 - JUnit
 
-# How to run the project
+## How to run the project
 
 You need to have Docker installed on your machine.
 
@@ -57,6 +62,6 @@ If you change something after the first run, you need to add `--build` flag to t
 
     docker compose up --build
 
-# API Documentation
+## API Documentation
 
     http://localhost:8080/swagger-ui/
