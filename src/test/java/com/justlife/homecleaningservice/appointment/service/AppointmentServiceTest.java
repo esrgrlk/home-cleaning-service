@@ -1,11 +1,10 @@
 package com.justlife.homecleaningservice.appointment.service;
 
+import com.justlife.homecleaningservice.appointment.dto.AvailableTimePeriodResponseDTO;
 import com.justlife.homecleaningservice.appointment.dto.CleanerAvailabilityResponseDTO;
-import com.justlife.homecleaningservice.appointment.dto.LocalTimePeriod;
 import com.justlife.homecleaningservice.appointment.entity.Appointment;
 import com.justlife.homecleaningservice.appointment.entity.Cleaner;
 import com.justlife.homecleaningservice.appointment.repository.CleanerRepository;
-import com.justlife.homecleaningservice.appointment.repository.specifications.CleanerSpecifications;
 import lombok.val;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -65,18 +64,18 @@ class AppointmentServiceTest {
         val response1 = actual.get(0);
         Assertions.assertThat(response1).isEqualTo(new CleanerAvailabilityResponseDTO(c1.getId(), c1.getName(), c1.getSurname(),
                 List.of(
-                        new LocalTimePeriod(LocalTime.of(12, 30, 0), LocalTime.of(16, 30, 0)),
-                        new LocalTimePeriod(LocalTime.of(19, 30, 0), LocalTime.of(22, 0, 0))
+                        new AvailableTimePeriodResponseDTO(LocalTime.of(12, 30, 0), LocalTime.of(16, 30, 0)),
+                        new AvailableTimePeriodResponseDTO(LocalTime.of(19, 30, 0), LocalTime.of(22, 0, 0))
                 )));
         val response2 = actual.get(1);
         Assertions.assertThat(response2).isEqualTo(new CleanerAvailabilityResponseDTO(c2.getId(), c2.getName(), c2.getSurname(),
                 List.of(
-                        new LocalTimePeriod(LocalTime.of(8, 0, 0), LocalTime.of(12, 30, 0)),
-                        new LocalTimePeriod(LocalTime.of(15, 30, 0), LocalTime.of(22, 0, 0))
+                        new AvailableTimePeriodResponseDTO(LocalTime.of(8, 0, 0), LocalTime.of(12, 30, 0)),
+                        new AvailableTimePeriodResponseDTO(LocalTime.of(15, 30, 0), LocalTime.of(22, 0, 0))
                 )));
         val response3 = actual.get(2);
         Assertions.assertThat(response3).isEqualTo(new CleanerAvailabilityResponseDTO(c3.getId(), c3.getName(), c3.getSurname(),
-                List.of(new LocalTimePeriod(LocalTime.of(8, 0, 0), LocalTime.of(22, 0, 0)))));
+                List.of(new AvailableTimePeriodResponseDTO(LocalTime.of(8, 0, 0), LocalTime.of(22, 0, 0)))));
     }
 
 

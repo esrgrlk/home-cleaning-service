@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
-import static com.justlife.homecleaningservice.appointment.repository.specifications.CleanerSpecifications.notOverlaps;
+import static com.justlife.homecleaningservice.appointment.repository.specifications.CleanerSpecifications.notOverlapsTimePeriod;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
@@ -26,7 +26,7 @@ public class TestCleanerRepository {
     public void test() {
         LocalDateTime startTime = LocalDateTime.of(2022, Month.SEPTEMBER, 28, 8, 0, 0);
         LocalDateTime endTime = LocalDateTime.of(2022, Month.SEPTEMBER, 28, 10, 0, 0);
-        List<Cleaner> cleanerList = cleanerRepository.findAll(notOverlaps(startTime, endTime));
+        List<Cleaner> cleanerList = cleanerRepository.findAll(notOverlapsTimePeriod(startTime, endTime));
         assertEquals(cleanerList.size(), 24);
     }
 }

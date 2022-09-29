@@ -10,18 +10,9 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import java.time.LocalDateTime;
 
-import static com.justlife.homecleaningservice.appointment.entity.Appointment_.endTime;
-
 public class CleanerSpecifications {
 
-    public static Specification<Cleaner> nullAppointment() {
-        return (root, query, cb) -> {
-            Join<Cleaner, Appointment> join = root.join(Cleaner_.appointments, JoinType.LEFT);
-            return cb.isNull(join.get(Appointment_.id));
-        };
-    }
-
-    public static Specification<Cleaner> notOverlaps(LocalDateTime startTime, LocalDateTime endTime) {
+    public static Specification<Cleaner> notOverlapsTimePeriod(LocalDateTime startTime, LocalDateTime endTime) {
         return (root, query, cb) -> {
             Join<Cleaner, Appointment> join = root.join(Cleaner_.appointments, JoinType.LEFT);
             return cb.or(cb.isNull(join.get(Appointment_.id)),
@@ -32,7 +23,7 @@ public class CleanerSpecifications {
         };
     }
 
-    public static Specification<Cleaner> overlaps(LocalDateTime startTime, LocalDateTime endTime) {
+    public static Specification<Cleaner> overlapsTimePeriod(LocalDateTime startTime, LocalDateTime endTime) {
         return (root, query, cb) -> {
             Join<Cleaner, Appointment> join = root.join(Cleaner_.appointments, JoinType.LEFT);
             return cb.or(cb.isNull(join.get(Appointment_.id)),
@@ -42,6 +33,4 @@ public class CleanerSpecifications {
                     ));
         };
     }
-
-
 }

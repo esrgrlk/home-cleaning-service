@@ -10,11 +10,10 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class LocalTimePeriod {
+public class AvailableTimePeriodResponseDTO {
 
     private LocalTime start;
 
     private LocalTime end;
-
 
 }

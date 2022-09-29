@@ -18,5 +18,5 @@ public class CleanerAvailabilityResponseDTO {
 
     private String surname;
 
-    private List<LocalTimePeriod> availableTimePeriodDTOList;
+    private List<AvailableTimePeriodResponseDTO> availableTimePeriodDTOList;
 }

@@ -1,9 +1,10 @@
 package com.justlife.homecleaningservice.appointment.service;
 
+import com.justlife.homecleaningservice.appointment.dto.AvailableTimePeriodResponseDTO;
 import com.justlife.homecleaningservice.appointment.dto.CleanerAvailabilityResponseDTO;
-import com.justlife.homecleaningservice.appointment.dto.LocalTimePeriod;
 import com.justlife.homecleaningservice.appointment.entity.Appointment;
 import com.justlife.homecleaningservice.appointment.entity.Cleaner;
+import com.justlife.homecleaningservice.appointment.mapper.CleanerAvailabilityMapper;
 import com.justlife.homecleaningservice.appointment.repository.AppointmentRepository;
 import com.justlife.homecleaningservice.appointment.repository.CleanerRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,16 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.justlife.homecleaningservice.appointment.repository.specifications.CleanerSpecifications.notOverlaps;
-import static com.justlife.homecleaningservice.appointment.repository.specifications.CleanerSpecifications.overlaps;
+import static com.justlife.homecleaningservice.appointment.repository.specifications.CleanerSpecifications.notOverlapsTimePeriod;
+import static com.justlife.homecleaningservice.appointment.repository.specifications.CleanerSpecifications.overlapsTimePeriod;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +32,8 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
 
     private final CleanerRepository cleanerRepository;
+
+    private final CleanerService cleanerService;
 
     @Transactional(readOnly = true)
     public List<Appointment> getAllAppointments() {
@@ -44,19 +46,15 @@ public class AppointmentService {
             return getAllCleanersSchedule(startDate);
         }
 
-        LocalDateTime startDateTime = startTime.atDate(startDate);
-        val availableCleaners = cleanerRepository.findAll(notOverlaps(startDateTime, startDateTime.plusHours(duration)));
+        List<Cleaner> availableCleaners = cleanerService.getAvailableCleaners(startDate, startTime, duration);
 
-        return availableCleaners
-                .stream()
-                .map(it -> new CleanerAvailabilityResponseDTO(it.getId(), it.getName(), it.getSurname(), Collections.emptyList()))
-                .collect(Collectors.toList());
+        return availableCleaners.stream().map(CleanerAvailabilityMapper.INSTANCE::entityToDto).collect(Collectors.toList());
     }
 
     public List<CleanerAvailabilityResponseDTO> getAllCleanersSchedule(LocalDate date) {
         val startTime = LocalTime.of(8, 0, 0);
         val endTime = LocalTime.of(22, 0, 0);
-        List<Cleaner> cleaners = cleanerRepository.findAll(overlaps(startTime.atDate(date), endTime.atDate(date)));
+        List<Cleaner> cleaners = cleanerRepository.findAll(overlapsTimePeriod(startTime.atDate(date), endTime.atDate(date)));
 
         return cleaners
                 .stream()
@@ -64,25 +62,25 @@ public class AppointmentService {
                 .collect(Collectors.toList());
     }
 
-    private List<LocalTimePeriod> getAvailableSchedule(Cleaner c) {
+    private List<AvailableTimePeriodResponseDTO> getAvailableSchedule(Cleaner c) {
         var timeStart = LocalTime.of(8, 0, 0);
         var timeEnd = LocalTime.of(22, 0, 0);
 
         if (c.getAppointments() == null || c.getAppointments().isEmpty()) {
-            return List.of(new LocalTimePeriod(timeStart, timeEnd));
+            return List.of(new AvailableTimePeriodResponseDTO(timeStart, timeEnd));
         }
         val appointments = c.getAppointments().stream().sorted(Comparator.comparing(Appointment::getStartTime)).toList();
 
-        val result = new ArrayList<LocalTimePeriod>();
+        val result = new ArrayList<AvailableTimePeriodResponseDTO>();
         for (final Appointment a : appointments) {
             LocalTime appStartTime = a.getStartTime().toLocalTime();
             if (appStartTime.isAfter(timeStart)) {
-                result.add(new LocalTimePeriod(timeStart, appStartTime.minusMinutes(30)));
+                result.add(new AvailableTimePeriodResponseDTO(timeStart, appStartTime.minusMinutes(30)));
             }
             timeStart = a.getEndTime().toLocalTime().plusMinutes(30);
         }
         if (timeStart.isBefore(timeEnd)) {
-            result.add(new LocalTimePeriod(timeStart, timeEnd));
+            result.add(new AvailableTimePeriodResponseDTO(timeStart, timeEnd));
         }
         return result;
 
@@ -90,8 +88,19 @@ public class AppointmentService {
 
     @Transactional
     public void create(Appointment appointment, Integer cleanerCount) {
-        List<Cleaner> availableCleaners = cleanerRepository.findAll(notOverlaps(appointment.getStartTime(), appointment.getEndTime()));
-        appointment.getCleaners().add(availableCleaners.get(0));
+        List<Cleaner> availableCleaners = cleanerRepository.findAll(notOverlapsTimePeriod(appointment.getStartTime().minusMinutes(30), appointment.getEndTime().plusMinutes(30)));
+
+        Map<Long, List<Cleaner>> cleanersPerVehicle = availableCleaners.stream().collect(Collectors.groupingBy(cleaner -> cleaner.getVehicle().getId()));
+
+        List<Cleaner> cleaners = new ArrayList<>();
+        for (Map.Entry<Long, List<Cleaner>> entry : cleanersPerVehicle.entrySet()) {
+            if (entry.getValue().size() >= cleanerCount) {
+                cleaners = entry.getValue().subList(0, cleanerCount);
+                break;
+            }
+        }
+        appointment.getCleaners().addAll(cleaners);
+       // appointment.getCleaners().add(availableCleaners.get(0));
         appointmentRepository.save(appointment);
     }
 
