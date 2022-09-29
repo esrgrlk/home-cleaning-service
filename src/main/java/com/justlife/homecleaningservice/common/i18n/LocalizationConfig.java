@@ -11,7 +11,7 @@ public class LocalizationConfig {
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasenames("classpath:/messages/*");
+        messageSource.setBasenames("classpath:/messages/appointment_messages_en");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }

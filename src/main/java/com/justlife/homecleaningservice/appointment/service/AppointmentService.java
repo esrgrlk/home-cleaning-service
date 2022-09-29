@@ -8,13 +8,18 @@ import com.justlife.homecleaningservice.appointment.repository.AppointmentReposi
 import com.justlife.homecleaningservice.appointment.repository.CleanerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.justlife.homecleaningservice.appointment.repository.specifications.CleanerSpecifications.notOverlaps;
@@ -27,6 +32,11 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
 
     private final CleanerRepository cleanerRepository;
+
+    @Transactional(readOnly = true)
+    public List<Appointment> getAllAppointments() {
+        return appointmentRepository.findAll();
+    }
 
     @Transactional(readOnly = true)
     public List<CleanerAvailabilityResponseDTO> getCleanersAvailability(LocalDate startDate, LocalTime startTime, Integer duration) {
@@ -78,5 +88,21 @@ public class AppointmentService {
 
     }
 
+    @Transactional
+    public void create(Appointment appointment, Integer cleanerCount) {
+        List<Cleaner> availableCleaners = cleanerRepository.findAll(notOverlaps(appointment.getStartTime(), appointment.getEndTime()));
+        appointment.getCleaners().add(availableCleaners.get(0));
+        appointmentRepository.save(appointment);
+    }
 
+    @Transactional
+    public void update(Appointment appointment) {
+        Appointment existingAppointment = retrieveByIdOrElseThrow(appointment.getId());
+      //  existingAppointment.update(appointment);
+    }
+
+    private Appointment retrieveByIdOrElseThrow(Long id) {
+        return appointmentRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, AppointmentMessages.ERROR_APPOINTMENT_NOT_FOUND));
+    }
 }

@@ -1,10 +1,7 @@
 package com.justlife.homecleaningservice.appointment.entity;
 
 import com.justlife.homecleaningservice.common.entity.AbstractVersionedAuditableEntity;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +11,8 @@ import java.util.Set;
 @Setter
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "APPOINTMENT")
 public class Appointment extends AbstractVersionedAuditableEntity {
 
@@ -29,12 +28,7 @@ public class Appointment extends AbstractVersionedAuditableEntity {
             inverseJoinColumns = @JoinColumn(name = "CLEANER_ID", referencedColumnName = "ID"))
     private Set<Cleaner> cleaners;
 
-    public Appointment() {
-    }
-
-    public Appointment(LocalDateTime startTime, LocalDateTime endTime, Set<Cleaner> cleaners) {
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.cleaners = cleaners;
+    public void update(Appointment appointment) {
+        this.startTime = appointment.getStartTime();
     }
 }

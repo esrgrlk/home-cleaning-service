@@ -1,0 +1,23 @@
+package com.justlife.homecleaningservice.appointment.mapper;
+
+import com.justlife.homecleaningservice.appointment.dto.UpdateAppointmentRequestDTO;
+import com.justlife.homecleaningservice.appointment.entity.Appointment;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+import java.time.LocalDateTime;
+
+@Mapper
+public interface UpdateAppointmentMapper {
+
+    UpdateAppointmentMapper INSTANCE = Mappers.getMapper(UpdateAppointmentMapper.class);
+
+    default Appointment convertToEntity(UpdateAppointmentRequestDTO updateAppointmentRequestDTO) {
+        LocalDateTime startDateTime = LocalDateTime.of(updateAppointmentRequestDTO.getStartDate(), updateAppointmentRequestDTO.getStartTime());
+        Appointment appointment = Appointment.builder()
+                                            .startTime(startDateTime)
+                                            .build();
+        appointment.setId(updateAppointmentRequestDTO.getId());
+        return appointment;
+    }
+}
