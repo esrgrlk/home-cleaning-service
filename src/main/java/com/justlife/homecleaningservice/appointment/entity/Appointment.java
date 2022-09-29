@@ -36,6 +36,7 @@ public class Appointment extends AbstractVersionedAuditableEntity {
     public void update(Appointment appointment) {
         this.startTime = appointment.getStartTime();
         this.endTime = appointment.getEndTime();
+        this.cleaners = appointment.getCleaners();
     }
 
     public long getDuration() {

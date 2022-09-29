@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 
 @Mapper
 public interface UpdateAppointmentMapper {
@@ -16,6 +17,7 @@ public interface UpdateAppointmentMapper {
         LocalDateTime startDateTime = LocalDateTime.of(updateAppointmentRequestDTO.getStartDate(), updateAppointmentRequestDTO.getStartTime());
         Appointment appointment = Appointment.builder()
                                             .startTime(startDateTime)
+                                            .cleaners(new HashSet<>())
                                             .build();
         appointment.setId(updateAppointmentRequestDTO.getId());
         return appointment;

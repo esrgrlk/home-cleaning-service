@@ -24,11 +24,12 @@ import java.util.Set;
 @ExtendWith(MockitoExtension.class)
 class TestAppointmentService {
 
+    @InjectMocks
+    private AppointmentService appointmentService;
+
     @Mock
     private CleanerService cleanerService;
 
-    @InjectMocks
-    private AppointmentService appointmentService;
 
     @Test
     public void testAllCleanersSchedule() {

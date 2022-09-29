@@ -83,6 +83,9 @@ public class AppointmentService {
         validateAppointmentTimePeriod(appointment);
 
         List<Cleaner> availableCleaners = getAvailableCleanersByCleanerCount(appointment, cleanerCount);
+        if (availableCleaners.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, AppointmentMessages.ERROR_APPOINTMENT_NOT_FOUND_AVAILABLE_CLEANER);
+        }
         appointment.getCleaners().addAll(availableCleaners);
         appointmentRepository.save(appointment);
     }
@@ -112,6 +115,12 @@ public class AppointmentService {
 
         appointment.setEndTime(appointment.getStartTime().plusHours(existingAppointment.getDuration()));
         validateAppointmentTimePeriod(appointment);
+
+        List<Cleaner> availableCleaners = getAvailableCleanersByCleanerCount(appointment, existingAppointment.getCleaners().size());
+        if (availableCleaners.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, AppointmentMessages.ERROR_APPOINTMENT_NOT_FOUND_AVAILABLE_CLEANER);
+        }
+        appointment.getCleaners().addAll(availableCleaners);
 
         existingAppointment.update(appointment);
     }
