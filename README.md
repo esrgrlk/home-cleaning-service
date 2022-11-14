@@ -1,4 +1,4 @@
-# Justlife Home Cleaning Service Case Study
+# Home Cleaning Service Case Study
 
 ## Author
 Esra Gürlük Yurt - esragurluk@gmail.com
